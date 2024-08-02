@@ -1,0 +1,137 @@
+{
+    "description": "Pypoll API JSON config schema",
+    "type": "object",
+    "properties": {
+        "mode": {
+            "type": "string",
+            "enum": [
+                "development",
+                "production"
+            ],
+            "default": "development",
+            "description": "The mode the API is running in (development or production)"
+        },
+        "host": {
+            "type": "string",
+            "default": "pollpe.apis.furwaz.fr",
+            "description": "The host address of the API"
+        },
+        "port": {
+            "type": "integer",
+            "default": 8080,
+            "description": "The port the API will listen on"
+        },
+        "mailContact": {
+            "type": "string",
+            "default": "contact@furwaz.fr",
+            "description": "The email address to contact for support"
+        },
+        "webHost": {
+            "type": "string",
+            "default": "pollpe.projects.furwaz.fr",
+            "description": "The host address of the web page (used for emails and CORS)"
+        },
+        "security": {
+            "type": "object",
+            "properties": {
+                "hashRounds": {
+                    "type": "number",
+                    "default": 10,
+                    "description": "The number of rounds used to hash passwords"
+                },
+                "jwtSecret": {
+                    "type": "string",
+                    "default": "openssl rand -base64 32",
+                    "description": "The secret used to sign JWT tokens"
+                },
+                "tokenExpiration": {
+                    "type": "string",
+                    "default": "",
+                    "description": "The expiration time of users token (empty to disable)"
+                }
+            }
+        },
+        "redis": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether or not to use Redis for caching (required for delayed jobs)"
+                },
+                "host": {
+                    "type": "string",
+                    "default": "localhost",
+                    "description": "The host name/address of the Redis server"
+                },
+                "port": {
+                    "type": "integer",
+                    "default": 6379,
+                    "description": "The port of the Redis server"
+                }
+            }
+        },
+        "mail": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether or not to send emails to users (for password reset, etc.)"
+                },
+                "from": {
+                    "type": "string",
+                    "default": "Pypoll <noreply@furwaz.fr>"
+                },
+                "host": {
+                    "type": "string",
+                    "default": "smtp.gmail.com",
+                    "description": "The host name/address of the SMTP server"
+                },
+                "port": {
+                    "type": "integer",
+                    "default": 587,
+                    "description": "The port of the SMTP server"
+                },
+                "secure": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether or not to use TLS for the SMTP connection"
+                },
+                "user": {
+                    "type": "string",
+                    "default": "",
+                    "description": "The username to use for SMTP connection"
+                },
+                "password": {
+                    "type": "string",
+                    "default": "",
+                    "description": "The password to use for SMTP connection"
+                }
+            },
+            "description": "The API mail server configuration"
+        },
+        "logging": {
+            "type": "object",
+            "properties": {
+                "level": {
+                    "type": "string",
+                    "enum": [
+                        "debug",
+                        "info",
+                        "warn",
+                        "error",
+                        "off"
+                    ],
+                    "description": "The maximum type of logs to display (off to disable logging)"
+                },
+                "file": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Whether or not to log to a file (located in logs/)"
+                }
+            },
+            "description": "The API logging configuration"
+        }
+    }
+}

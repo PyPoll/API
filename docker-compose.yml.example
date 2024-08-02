@@ -1,0 +1,38 @@
+version: '3.1'
+
+name: furwaz-api
+services:
+  db:
+    image: mariadb
+    restart: unless-stopped
+    command: [
+      '--lower-case-table-names=1'
+    ]
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_DATABASE: furwaz
+      MARIADB_ROOT_PASSWORD: root
+    networks:
+      - api-network
+
+  redis:
+    image: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - api-network
+
+  # Node api setup
+  node:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    networks:
+      - api-network
+
+networks:
+  api-network:
+    driver: bridge

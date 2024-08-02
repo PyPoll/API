@@ -1,0 +1,15 @@
+{
+    "Created":  "${resource} created successfully",
+    "Updated":  "${resource} updated successfully",
+    "Deleted":  "${resource} deleted successfully",
+    "Fetched":  "${resource} feched successfully",
+    "NotFound": "${resource} not found",
+    "Added":    "${resource} added successfully",
+    "Removed":  "${resource} removed successfully",
+    "EmailChanged": "Email changed successfully",
+    "EmailSent": "Email sent successfully",
+    "LoggedIn": "Logged in successfully",
+    "TokenRefreshed": "Token refreshed successfully",
+    "Followed": "Followed successfully",
+    "Unfollowed": "Unfollowed successfully"
+}

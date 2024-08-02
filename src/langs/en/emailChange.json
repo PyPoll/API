@@ -1,0 +1,9 @@
+{
+    "Title": "There's a change coming! 🫡",
+    "FloorText1": "Do you want to change the email address of your account?",
+    "FloorText2": "To confirm this email address change, click the button below. 😉",
+    "ButtonText": "Change email address",
+    "GroundText": "See you soon in your new inbox!",
+    "Footer1": "This email is automatically sent in response to a request to change the email address on <b>Pypoll</b>.",
+    "Footer2": "If you did not initiate this request, simply ignore this email and the change will not take place."
+}

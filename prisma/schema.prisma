@@ -1,0 +1,103 @@
+// Prisma schema for the database
+// This file is used to generate the prisma client and the database schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id          Int      @id @default(autoincrement())
+    email       String   @unique
+    pseudo      String?
+    bio         String?
+    emailValid  Boolean  @default(false)
+    nbFollowers Int      @default(0)
+    nbFollowing Int      @default(0)
+
+    polls      Poll[]
+    followers  Follow[]   @relation("Followers")
+    following  Follow[]   @relation("Following")
+
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+}
+
+model Follow {
+    followerId Int
+    followedId Int
+
+    follower   User @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
+    followed   User @relation("Following", fields: [followedId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@id([followerId, followedId])
+}
+
+model Poll {
+    id          Int      @id @default(autoincrement())
+    title       String
+    description String
+    type        String
+    authorId    Int
+
+    author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    tags        PollTag[]
+    medias      Media[]
+    answers     Answer[]
+
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model Tag {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+
+    polls     PollTag[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Media {
+    id        Int      @id @default(autoincrement())
+    pollId    Int
+    filename  String
+
+    poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Answer {
+    id        Int      @id @default(autoincrement())
+    pollId    Int
+    label     String
+    emoji     String
+
+    poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model PollTag {
+    pollId    Int
+    tagId     Int
+
+    poll      Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+    tag       Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@id([pollId, tagId])
+}

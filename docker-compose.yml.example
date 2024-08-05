@@ -1,6 +1,6 @@
 version: '3.1'
 
-name: furwaz-api
+name: pypoll-api
 services:
   db:
     image: mariadb
@@ -11,7 +11,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MARIADB_DATABASE: furwaz
+      MARIADB_DATABASE: pypoll
       MARIADB_ROOT_PASSWORD: root
     networks:
       - api-network

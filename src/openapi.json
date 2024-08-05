@@ -700,6 +700,34 @@
           }
         }
       }
+    },
+    "/beta/register": {
+      "post": {
+        "tags": [
+          "Beta"
+        ],
+        "description": "Register to the beta",
+        "operationId": "registerBeta",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -739,11 +767,29 @@
           "type": "string",
           "example": "string"
         },
+        "description": {
+          "type": "string",
+          "example": "string"
+        },
+        "type": {
+          "type": "string",
+          "example": "string"
+        },
         "authorId": {
           "type": "string",
           "example": "string"
         },
         "author": {},
+        "answerIds": {
+          "type": "array",
+          "example": [
+            0
+          ],
+          "items": {
+            "type": "number"
+          }
+        },
+        "answers": {},
         "tagIds": {
           "type": "array",
           "example": [
@@ -785,11 +831,29 @@
           "type": "string",
           "example": "string"
         },
+        "description": {
+          "type": "string",
+          "example": "string"
+        },
+        "type": {
+          "type": "string",
+          "example": "string"
+        },
         "authorId": {
           "type": "string",
           "example": "string"
         },
         "author": {},
+        "answerIds": {
+          "type": "array",
+          "example": [
+            0
+          ],
+          "items": {
+            "type": "number"
+          }
+        },
+        "answers": {},
         "tagIds": {
           "type": "array",
           "example": [

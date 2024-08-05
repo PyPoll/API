@@ -13,7 +13,7 @@
         },
         "host": {
             "type": "string",
-            "default": "pollpe.apis.furwaz.fr",
+            "default": "api.pypoll.com",
             "description": "The host address of the API"
         },
         "port": {
@@ -28,7 +28,7 @@
         },
         "webHost": {
             "type": "string",
-            "default": "pollpe.projects.furwaz.fr",
+            "default": "app.pypoll.com",
             "description": "The host address of the web page (used for emails and CORS)"
         },
         "security": {

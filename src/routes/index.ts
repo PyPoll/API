@@ -8,6 +8,7 @@ import routerPolls from './polls.ts';
 import routerTags from './tags.ts';
 import routerMedias from './medias.ts';
 import routerEmail from './email.ts';
+import routerBeta from './beta.ts';
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.use('/polls', routerPolls);
 router.use('/tags', routerTags);
 router.use('/medias', routerMedias);
 router.use('/email', routerEmail);
+router.use('/beta', routerBeta);
 
 export default router;

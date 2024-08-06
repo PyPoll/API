@@ -203,7 +203,7 @@ export async function updateUser(id: number, pseudo: string|undefined, email: st
 
     const infos: any = {};
     if (pseudo !== undefined) infos.pseudo = pseudo;
-    if (email !== undefined) {
+    if (email !== undefined && email !== user.email) {
         // check if email already exists
         const exists = await prisma.user.findFirst({ where: { email } });
         if (exists !== null) {

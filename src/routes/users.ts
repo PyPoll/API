@@ -63,8 +63,12 @@ router.patch('/me', auth, async (req, res) => {
     const { token } = res.locals;
     const { pseudo, email} = req.body;
 
-    const newUser = await controller.updateUser(token.id, pseudo, email);
-    respond(res, User.MESSAGES.UPDATED(), newUser);
+    try {
+        const newUser = await controller.updateUser(token.id, pseudo, email);
+        respond(res, User.MESSAGES.UPDATED(), newUser);
+    } catch (err) {
+        respondError(res, err);
+    }
 });
 
 // Delete own user
@@ -143,10 +147,9 @@ router.delete('/:id', auth, async (req, res) => {
      * #swagger.security = [{ ApiKeyAuth: [] }]
      */
     const schema = Joi.object({
-        id: Joi.number().required(),
-        password: Joi.string().min(8).required()
+        id: Joi.number().required()
     });
-    const { error } = schema.validate({ ...req.params, ...req.body });
+    const { error } = schema.validate({ ...req.params });
     if (error) return respondError(res, error);
 
     const id = parseInt(req.params.id);

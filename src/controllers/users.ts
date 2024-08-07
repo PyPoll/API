@@ -196,12 +196,13 @@ export async function emailChange(token: string) {
     return true;
 }
 
-export async function updateUser(id: number, pseudo: string|undefined, email: string|undefined) {
+export async function updateUser(id: number, pseudo: string|undefined, email: string|undefined, bio: string|undefined) {
     const user = await prisma.user.findUnique({ where: { id } });
     if (user === null)
         throw User.MESSAGES.NOT_FOUND().buildHTTPError();
 
     const infos: any = {};
+    if (bio !== undefined) infos.bio = bio;
     if (pseudo !== undefined) infos.pseudo = pseudo;
     if (email !== undefined && email !== user.email) {
         // check if email already exists

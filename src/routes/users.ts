@@ -57,16 +57,17 @@ router.patch('/me', auth, async (req, res) => {
      */
     const schema = Joi.alt({
         pseudo: Joi.string(),
-        email: Joi.string().email()
+        email: Joi.string().email(),
+        bio: Joi.string(),
     });
     const { error } = schema.validate(req.body);
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
-    const { pseudo, email} = req.body;
+    const { pseudo, email, bio } = req.body;
 
     try {
-        const newUser = await controller.updateUser(token.id, pseudo.trim(), email.trim());
+        const newUser = await controller.updateUser(token.id, pseudo.trim(), email.trim(), bio.trim());
         respond(res, User.MESSAGES.UPDATED(), newUser);
     } catch (err) {
         respondError(res, err);
@@ -126,20 +127,21 @@ router.patch('/:id', auth, async (req, res) => {
     const schema = Joi.alt({
         id: Joi.number().required(),
         pseudo: Joi.string(),
-        email: Joi.string().email()
+        email: Joi.string().email(),
+        bio: Joi.string(),
     });
     const { error } = schema.validate({ id: req.params.id, ...req.body });
     if (error) return respondError(res, error);
 
     const id = parseInt(req.params.id);
     const { token } = res.locals;
-    const { pseudo, email } = req.body;
+    const { pseudo, email, bio } = req.body;
 
     if (token.id !== id)
         return respondError(res, HTTPError.Unauthorized());
 
     try {
-        const newUser = await controller.updateUser(id, pseudo.trim(), email.trim());
+        const newUser = await controller.updateUser(id, pseudo.trim(), email.trim(), bio.trim());
         respond(res, User.MESSAGES.UPDATED(), newUser);
     } catch (err) { respondError(res, err); }
 });

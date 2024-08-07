@@ -41,8 +41,10 @@ router.get('/me', auth, async (req, res) => {
      */
     const { token } = res.locals;
 
-    const user = await controller.getPrivateUser(token.id);
-    respond(res, User.MESSAGES.FETCHED(), user);
+    try {
+        const user = await controller.getPrivateUser(token.id);
+        respond(res, User.MESSAGES.FETCHED(), user);
+    } catch (err) { respondError(res, err); }
 });
 
 // Update own user
@@ -106,9 +108,11 @@ router.get('/:id', mayAuth, async (req, res) => {
 
     const shouldBePrivate = token?.id === id;
 
-    const user = await (shouldBePrivate? controller.getPrivateUser: controller.getPublicUser)(id);
-    if (!user) return respondError(res, User.MESSAGES.NOT_FOUND().buildHTTPError());
-    respond(res, User.MESSAGES.FETCHED(), user);
+    try {
+        const user = await (shouldBePrivate? controller.getPrivateUser: controller.getPublicUser)(id);
+        if (!user) return respondError(res, User.MESSAGES.NOT_FOUND().buildHTTPError());
+        respond(res, User.MESSAGES.FETCHED(), user);
+    } catch (err) { respondError(res, err); }
 });
 
 // Update a user by its ID
@@ -134,8 +138,10 @@ router.patch('/:id', auth, async (req, res) => {
     if (token.id !== id)
         return respondError(res, HTTPError.Unauthorized());
 
-    const newUser = await controller.updateUser(id, pseudo, email);
-    respond(res, User.MESSAGES.UPDATED(), newUser);
+    try {
+        const newUser = await controller.updateUser(id, pseudo, email);
+        respond(res, User.MESSAGES.UPDATED(), newUser);
+    } catch (err) { respondError(res, err); }
 });
 
 // Delete a user by its ID

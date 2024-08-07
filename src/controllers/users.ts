@@ -222,7 +222,8 @@ export async function updateUser(id: number, pseudo: string|undefined, email: st
     }
 
     if (Object.keys(infos).length > 0)
-        await prisma.user.update({ where: { id }, data: infos });
+        return await prisma.user.update({ where: { id }, data: infos });
+    return user;
 }
 
 export async function deleteUser(id: number) {

@@ -4,6 +4,7 @@ import { buildResourceMessages, type ResponseMessageBuilder } from "tools/Model.
 import { PublicUser, User } from "./User.ts";
 import { Tag } from "./Tag.ts";
 import { Media } from "./Media.ts";
+import { Answer } from "./Answer.ts";
 
 export interface PrivatePoll {
     id: number;
@@ -64,7 +65,7 @@ export class Poll {
             description: obj.description,
             type: obj.type,
             authorId: obj.authorId,
-            answers: obj.answers,
+            answers: obj.answers ? obj.answers.map((answer: any) => Answer.makePublic(answer)) : undefined,
             answerIds: obj.answers ? obj.answers.map((answer: any) => answer?.id) : undefined,
             author: obj.author ? User.makePublic(obj.author) : undefined,
             tagIds: obj.tags ? obj.tags.map((pollTag: any) => pollTag?.tagId) : undefined,
@@ -83,7 +84,7 @@ export class Poll {
             description: obj.description,
             type: obj.type,
             authorId: obj.authorId,
-            answers: obj.answers,
+            answers: obj.answers ? obj.answers.map((answer: any) => Answer.makePublic(answer)) : undefined,
             answerIds: obj.answers ? obj.answers.map((answer: any) => answer?.id) : undefined,
             author: obj.author ? User.makePublic(obj.author) : undefined,
             tagIds: obj.tags ? obj.tags.map((pollTag: any) => pollTag?.tagId) : undefined,

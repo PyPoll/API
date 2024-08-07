@@ -66,7 +66,7 @@ router.patch('/me', auth, async (req, res) => {
     const { pseudo, email} = req.body;
 
     try {
-        const newUser = await controller.updateUser(token.id, pseudo, email);
+        const newUser = await controller.updateUser(token.id, pseudo.trim(), email.trim());
         respond(res, User.MESSAGES.UPDATED(), newUser);
     } catch (err) {
         respondError(res, err);
@@ -139,7 +139,7 @@ router.patch('/:id', auth, async (req, res) => {
         return respondError(res, HTTPError.Unauthorized());
 
     try {
-        const newUser = await controller.updateUser(id, pseudo, email);
+        const newUser = await controller.updateUser(id, pseudo.trim(), email.trim());
         respond(res, User.MESSAGES.UPDATED(), newUser);
     } catch (err) { respondError(res, err); }
 });

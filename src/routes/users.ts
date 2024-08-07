@@ -58,7 +58,7 @@ router.patch('/me', auth, async (req, res) => {
     const schema = Joi.alt({
         pseudo: Joi.string().optional(),
         email: Joi.string().email().optional(),
-        bio: Joi.string().optional(),
+        bio: Joi.string().optional().allow(''),
     });
     const { error } = schema.validate(req.body);
     if (error) return respondError(res, error);
@@ -128,7 +128,7 @@ router.patch('/:id', auth, async (req, res) => {
         id: Joi.number().required(),
         pseudo: Joi.string().optional(),
         email: Joi.string().email().optional(),
-        bio: Joi.string().optional(),
+        bio: Joi.string().optional().allow(''),
     });
     const { error } = schema.validate({ id: req.params.id, ...req.body });
     if (error) return respondError(res, error);

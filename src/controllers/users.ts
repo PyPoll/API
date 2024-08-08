@@ -118,7 +118,7 @@ export async function sendEmailRegister(email: string, userId: number|undefined 
  * @returns The created user (as a PrivateUser)
  */
 export async function createUser(pseudo: string, email: string): Promise<PrivateUser> {
-    const user = await prisma.user.findFirst({ where: { OR: [{ pseudo }, { email }] } });
+    const user = await prisma.user.findFirst({ where: { email } });
     
     // If user already exists, throw an error
     if (user !== null) {
@@ -144,6 +144,11 @@ export async function createUser(pseudo: string, email: string): Promise<Private
     return User.makePrivate(newUser);
 }
 
+export async function createDevice(): Promise<PrivateUser> {
+    const newUser = await prisma.user.create({ data: {} });
+    return User.makePrivate(newUser);
+}
+
 /**
  * Get a user token from an email token
  * @param token email login token
@@ -161,7 +166,9 @@ export async function emailLogin(token: string) {
     await prisma.user.update({ where: { id: data.id }, data: { emailValid: true } });
     const userToken = await createUserToken(data.id);
 
-    completeLoginPolling(user.email, userToken);
+    if (user.email) {
+        completeLoginPolling(user.email, userToken);
+    }
     return userToken;
 }
 
@@ -217,8 +224,14 @@ export async function updateUser(id: number, pseudo: string|undefined, email: st
                 ))
             );
         }
-        // send an email change mail
-        sendEmailChange(id, user.email, email);
+        if (user.email) {
+            // send an email change mail
+            sendEmailChange(id, user.email, email);
+        }
+        else {
+            // no email = device account creating its user, so we send a welcome mail
+            sendEmailRegister(email, id);
+        }
     }
 
     if (Object.keys(infos).length > 0)

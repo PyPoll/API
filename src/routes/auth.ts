@@ -24,7 +24,7 @@ router.get('/token', auth, async (req, res) => {
 router.get('/login', async (req, res) => {
     /**
      * #swagger.tags = ['Authentication']
-     * #swagger.description = 'Retreive a user token from it\'s login token (long polling)'
+     * #swagger.description = 'Retreive a user token from its login token (long polling)'
      * #swagger.operationId = 'login'
      */
     try {

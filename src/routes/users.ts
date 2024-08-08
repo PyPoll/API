@@ -1,7 +1,7 @@
 import express from 'express';
 import Joi from 'joi';
 import * as controller from '../controllers/users.ts';
-import { User } from 'models/User.ts';
+import { PrivateUser, User } from 'models/User.ts';
 import { respondError, respond } from 'tools/Responses.ts';
 import { auth, mayAuth } from 'middleware/auth.ts';
 import HTTPError from 'errors/HTTPError.ts';
@@ -19,13 +19,24 @@ router.post('/', async (req, res) => {
         pseudo: Joi.string().required(),
         email: Joi.string().email().required()
     });
-    const { error } = schema.validate(req.body);
-    if (error) return respondError(res, error);
+    let user = null as PrivateUser | null;
+    if (Object.keys(req.body).length > 0) {
+        const { error } = schema.validate(req.body);
+        if (error) return respondError(res, error);
 
-    const { pseudo, email } = req.body;
+        const { pseudo, email } = req.body;
+        try {
+            user = await controller.createUser(pseudo, email);
+        } catch (err) { respondError(res, err); }
+    }
+    else {
+        try {
+            user = await controller.createDevice();
+        } catch (err) { respondError(res, err); }
+    }
 
     try {
-        const user = await controller.createUser(pseudo, email);
+        if (!user) throw HTTPError.InternalServerError();
         const token = await createUserToken(user.id);
         respond(res, User.MESSAGES.CREATED(), {user, token});
     } catch (err) { respondError(res, err); }

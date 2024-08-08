@@ -4,6 +4,8 @@ import { type Response } from "express";
 import { respond, respondError, ResponseMessage } from "tools/Responses.ts";
 import Lang from "tools/Lang.ts";
 import HTTPError from "errors/HTTPError.ts";
+import { prisma } from "index.ts";
+import { User } from "models/User.ts";
 
 type EmailPollingData = {
     response: Response
@@ -12,10 +14,13 @@ type EmailPollingData = {
 const emailPollingRequests: { [email: string]: EmailPollingData } = {};
 
 export async function createUserToken(userId: number) {
+    const user = await prisma.user.findFirst({ where: { id: userId } });
+    if (!user) throw User.MESSAGES.NOT_FOUND().buildHTTPError();
+
     return await TokenUtils.encode({
-        id: userId,
+        id: user.id,
         expiration: Config.security.tokenExpiration
-    })
+    });
 }
 
 export async function createLoginPollingToken(userEmail: string) {

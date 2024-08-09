@@ -26,17 +26,24 @@ export default function (period: number, max: number) {
      * @param {NextFunction} next The next function
      */
     return function (req: Request, res: Response, next: NextFunction) {
-        const requests = requestsMap[req.ip ?? ''] || [];
+        if (!req.ip) {
+            console.log('CalmDown error : Cannot block from unknown IP');
+            next();
+            return;
+        }
+
+        const requests = requestsMap[req.ip] || [];
         const now = Date.now();
         const period_ms = period * 1000;
         const period_start = now - period_ms;
         const period_requests = requests.filter((timestamp) => timestamp > period_start);
 
         if (period_requests.length > max) {
+            console.log('Blocking request from', req.ip);
             return res.status(429).send('Too many requests');
         }
 
-        requestsMap[req.ip ?? ''] = [...period_requests, now];
+        requestsMap[req.ip] = [...period_requests, now].filter((timestamp) => timestamp > period_start);
         next();
     }
 }

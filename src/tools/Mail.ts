@@ -15,13 +15,13 @@ export default class Mail {
      * @param assigns The variables to replace in the template
      * @returns The mail object corresponding to the JSON file
      */
-    public static fromFile(subject: string, path: string, assigns: { [key: string]: string } = {}): Mail {
-        const data = fs.readFileSync(path);
-        const html = Formatter.formatString(data.toString(), assigns);
+    public static fromFile(subject: string, htmlPath: string, textPath: string, assigns: { [key: string]: string } = {}): Mail {
+        const html = Formatter.formatString(fs.readFileSync(htmlPath).toString(), assigns);
+        const text = Formatter.formatString(fs.readFileSync(textPath).toString(), assigns);
 
         return Mail.fromJSON({
             subject: Formatter.formatString(subject, assigns),
-            text: html,
+            text: text,
             html: html
         });
     }

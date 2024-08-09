@@ -32,6 +32,7 @@ router.post('/register', async (req, res) => {
             Mail.fromFile(
                 Lang.GetText(Lang.CreateTranslationContext('emailBeta', 'Title')),
                 getRootDir() + 'mails/emailButton.html',
+                getRootDir() + 'mails/emailButton.txt',
                 {
                     Title: Lang.GetText(Lang.CreateTranslationContext('emailBeta', 'Title')),
                     FloorText1: Lang.GetText(Lang.CreateTranslationContext('emailBeta', 'FloorText1')),

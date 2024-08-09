@@ -40,6 +40,7 @@ async function sendEmailChange(userId: number, oldEmail: string, newEmail: strin
         Mail.fromFile(
             Lang.GetText(Lang.CreateTranslationContext('emailChange', 'Title')),
             getRootDir() + 'mails/emailButton.html',
+            getRootDir() + 'mails/emailButton.txt',
             {
                 Title: Lang.GetText(Lang.CreateTranslationContext('emailChange', 'Title')),
                 FloorText1: Lang.GetText(Lang.CreateTranslationContext('emailChange', 'FloorText1')),
@@ -68,6 +69,7 @@ export async function sendEmailLogin(email: string, userId: number|undefined = u
         Mail.fromFile(
             Lang.GetText(Lang.CreateTranslationContext('emailLogin', 'Title')),
             getRootDir() + 'mails/emailButton.html',
+            getRootDir() + 'mails/emailButton.txt',
             {
                 Title: Lang.GetText(Lang.CreateTranslationContext('emailLogin', 'Title')),
                 FloorText1: Lang.GetText(Lang.CreateTranslationContext('emailLogin', 'FloorText1')),
@@ -96,6 +98,7 @@ export async function sendEmailRegister(email: string, userId: number|undefined 
         Mail.fromFile(
             Lang.GetText(Lang.CreateTranslationContext('emailRegister', 'Title')),
             getRootDir() + 'mails/emailButton.html',
+            getRootDir() + 'mails/emailButton.txt',
             {
                 Title: Lang.GetText(Lang.CreateTranslationContext('emailRegister', 'Title')),
                 FloorText1: Lang.GetText(Lang.CreateTranslationContext('emailRegister', 'FloorText1')),
@@ -145,7 +148,7 @@ export async function createUser(pseudo: string, email: string) {
 }
 
 export async function createDevice() {
-    const pseudo = 'Octopus#' + Math.floor(Math.random() * 1000);
+    const pseudo = 'Octopus #' + Math.floor(Math.random() * 1000);
     const newUser = await prisma.user.create({ data: { pseudo } });
     return User.makePrivate(newUser);
 }

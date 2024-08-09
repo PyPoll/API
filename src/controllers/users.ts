@@ -145,7 +145,8 @@ export async function createUser(pseudo: string, email: string) {
 }
 
 export async function createDevice() {
-    const newUser = await prisma.user.create({ data: {} });
+    const pseudo = 'Octopus#' + Math.floor(Math.random() * 1000);
+    const newUser = await prisma.user.create({ data: { pseudo } });
     return User.makePrivate(newUser);
 }
 

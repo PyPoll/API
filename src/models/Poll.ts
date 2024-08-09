@@ -5,6 +5,7 @@ import { PublicUser, User } from "./User.ts";
 import { Tag } from "./Tag.ts";
 import { Media } from "./Media.ts";
 import { Answer } from "./Answer.ts";
+import { ResponseMessage } from "tools/Responses.ts";
 
 export interface PrivatePoll {
     id: number;
@@ -36,6 +37,7 @@ export interface PublicPoll {
     medias: string[]|undefined;
 }
 
+const PollTranslated = Lang.GetText(Lang.CreateTranslationContext('models', 'Poll'));
 export class Poll {
     public static privateIncludes: Prisma.PollInclude = {
         medias: true,
@@ -51,9 +53,19 @@ export class Poll {
     };
 
     public static MESSAGES: Record<string, ResponseMessageBuilder> = {
-        ...buildResourceMessages(Lang.GetText(
-            Lang.CreateTranslationContext('models', 'Poll')
-        ))
+        ...buildResourceMessages(PollTranslated),
+        REPORTED: () => new ResponseMessage(
+            PollTranslated + ' ' + Lang.GetText(Lang.CreateTranslationContext('responses', 'Reported')),
+            200
+        ),
+        ANSWERED: () => new ResponseMessage(
+            PollTranslated + ' ' + Lang.GetText(Lang.CreateTranslationContext('responses', 'Answered')),
+            200
+        ),
+        UNANSWERED: () => new ResponseMessage(
+            PollTranslated + ' ' + Lang.GetText(Lang.CreateTranslationContext('responses', 'Unanswered')),
+            200
+        ),
     };
 
     public static makePublic(obj: any): PublicPoll {

@@ -1,7 +1,6 @@
 import express from 'express';
 import { respondError, respond } from 'tools/Responses.ts';
 import * as controller from '../controllers/polls.ts';
-import { auth } from 'middleware/auth.ts';
 import { Poll } from 'models/Poll.ts';
 import Joi from 'joi';
 import HTTPError from 'errors/HTTPError.ts';
@@ -9,7 +8,7 @@ import { Media } from 'models/Media.ts';
 const router = express.Router();
 
 // Get a new poll (from recommandation)
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
     /**
      * #swagger.tags = ['Polls']
      * #swagger.description = 'Get a new poll from recommandation'
@@ -24,7 +23,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Create a new poll
-router.post('/', auth, async (req, res) => {
+router.post('/', async (req, res) => {
     /**
      * #swagger.tags = ['Polls']
      * #swagger.description = 'Create a new poll'
@@ -61,7 +60,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 // Get a poll by ID
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', async (req, res) => {
     /**
      * #swagger.tags = ['Polls']
      * #swagger.description = 'Get a poll by ID'
@@ -74,16 +73,40 @@ router.get('/:id', auth, async (req, res) => {
     const { error } = schema.validate(req.params);
     if (error) return respondError(res, error);
 
+    const { token } = res.locals;
     const { id } = req.params;
 
     try {
-        const poll = await controller.get(parseInt(id));
+        const poll = await controller.get(token.id, parseInt(id));
         respond(res, Poll.MESSAGES.FETCHED(), poll);
     } catch (err) { respondError(res, err); }
 });
 
+// Delete a post
+router.delete('/:id', async (req, res) => {
+    /**
+     * #swagger.tags = ['Polls']
+     * #swagger.description = 'Delete a poll'
+     * #swagger.operationId = 'deletePoll'
+     * #swagger.security = [{ ApiKeyAuth: [] }]
+     */
+    const schema = Joi.object({
+        id: Joi.number().required()
+    });
+    const { error } = schema.validate(req.params);
+    if (error) return respondError(res, error);
+
+    const { token } = res.locals;
+    const { id } = req.params;
+
+    try {
+        await controller.deletePoll(token.id, parseInt(id));
+        respond(res, Poll.MESSAGES.DELETED());
+    } catch (err) { respondError(res, err); }
+});
+
 // Upload a new poll media
-router.post('/:id/media', auth, async (req, res) => {
+router.post('/:id/media', async (req, res) => {
     /**
      * #swagger.tags = ['Polls']
      * #swagger.description = 'Upload a new poll media'
@@ -118,12 +141,11 @@ router.post('/:id/media', auth, async (req, res) => {
     } catch (err) { respondError(res, err); }
 });
 
-// Delete a post
-router.delete('/:id', auth, async (req, res) => {
+router.get('/:id/answers', async (req, res) => {
     /**
      * #swagger.tags = ['Polls']
-     * #swagger.description = 'Delete a poll'
-     * #swagger.operationId = 'deletePoll'
+     * #swagger.description = 'Get answers of a poll'
+     * #swagger.operationId = 'getPollAnswers'
      * #swagger.security = [{ ApiKeyAuth: [] }]
      */
     const schema = Joi.object({
@@ -136,8 +158,101 @@ router.delete('/:id', auth, async (req, res) => {
     const { id } = req.params;
 
     try {
-        await controller.deletePoll(token.id, parseInt(id));
-        respond(res, Poll.MESSAGES.DELETED());
+        const answers = await controller.getAnswers(token.id, parseInt(id));
+        respond(res, Poll.MESSAGES.FETCHED(), answers);
+    } catch (err) { respondError(res, err); }
+});
+
+router.post('/:id/answers', async (req, res) => {
+    /**
+     * #swagger.tags = ['Polls']
+     * #swagger.description = 'Answer a poll'
+     * #swagger.operationId = 'answerPoll'
+     * #swagger.security = [{ ApiKeyAuth: [] }]
+     */
+    const schema = Joi.object({
+        id: Joi.number().required(),
+        answerId: Joi.number().required()
+    });
+    const { error } = schema.validate({ ...req.params, ...req.body });
+    if (error) return respondError(res, error);
+
+    const { token } = res.locals;
+    const { id } = req.params;
+    const { answerId } = req.body;
+
+    try {
+        await controller.answerPoll(token.id, parseInt(id), parseInt(answerId));
+        respond(res, Poll.MESSAGES.ANSWERED());
+    } catch (err) { respondError(res, err); }
+});
+
+router.delete('/:id/answers/:answerId', async (req, res) => {
+    /**
+     * #swagger.tags = ['Polls']
+     * #swagger.description = 'Delete an answer of a poll'
+     * #swagger.operationId = 'deletePollAnswer'
+     * #swagger.security = [{ ApiKeyAuth: [] }]
+     */
+    const schema = Joi.object({
+        id: Joi.number().required(),
+        answerId: Joi.number().required()
+    });
+    const { error } = schema.validate({ ...req.params });
+    if (error) return respondError(res, error);
+
+    const { token } = res.locals;
+    const { id, answerId } = req.params
+
+    try {
+        await controller.removeAnswerPoll(token.id, parseInt(id), parseInt(answerId));
+        respond(res, Poll.MESSAGES.UNANSWERED());
+    } catch (err) { respondError(res, err); }
+});
+
+router.get('/:id/reports', async (req, res) => {
+    /**
+     * #swagger.tags = ['Polls']
+     * #swagger.description = 'Get report score of a poll'
+     * #swagger.operationId = 'getPollReports'
+     * #swagger.security = [{ ApiKeyAuth: [] }]
+     */
+    const schema = Joi.object({
+        id: Joi.number().required()
+    });
+    const { error } = schema.validate(req.params);
+    if (error) return respondError(res, error);
+
+    const { token } = res.locals;
+    const { id } = req.params;
+
+    try {
+        const score = await controller.getReportScore(token.id, parseInt(id));
+        respond(res, Poll.MESSAGES.FETCHED(), score);
+    } catch (err) { respondError(res, err); }
+});
+
+router.post('/:id/reports', async (req, res) => {
+    /**
+     * #swagger.tags = ['Polls']
+     * #swagger.description = 'Report a poll'
+     * #swagger.operationId = 'reportPoll'
+     * #swagger.security = [{ ApiKeyAuth: [] }]
+     */
+    const schema = Joi.object({
+        id: Joi.number().required(),
+        reason: Joi.string().required()
+    });
+    const { error } = schema.validate({ ...req.params, ...req.body });
+    if (error) return respondError(res, error);
+
+    const { token } = res.locals;
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    try {
+        await controller.reportPoll(token.id, parseInt(id), reason);
+        respond(res, Poll.MESSAGES.REPORTED());
     } catch (err) { respondError(res, err); }
 });
 

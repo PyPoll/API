@@ -81,7 +81,7 @@
         "tags": [
           "Authentication"
         ],
-        "description": "Retreive a user token from it\\'s login token (long polling)",
+        "description": "Retreive a user token from its login token (long polling)",
         "operationId": "login",
         "parameters": [
           {
@@ -163,6 +163,9 @@
                   "example": "any"
                 },
                 "email": {
+                  "example": "any"
+                },
+                "bio": {
                   "example": "any"
                 }
               }
@@ -247,6 +250,9 @@
                   "example": "any"
                 },
                 "email": {
+                  "example": "any"
+                },
+                "bio": {
                   "example": "any"
                 }
               }
@@ -478,6 +484,171 @@
             "in": "formData",
             "type": "file",
             "required": true
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/polls/{id}/answers": {
+      "get": {
+        "tags": [
+          "Polls"
+        ],
+        "description": "Get answers of a poll",
+        "operationId": "getPollAnswers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Polls"
+        ],
+        "description": "Answer a poll",
+        "operationId": "answerPoll",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answerId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Polls"
+        ],
+        "description": "Delete an answer of a poll",
+        "operationId": "deletePollAnswer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "answerId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/polls/{id}/report": {
+      "get": {
+        "tags": [
+          "Polls"
+        ],
+        "description": "Get report score of a poll",
+        "operationId": "getPollReports",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Polls"
+        ],
+        "description": "Report a poll",
+        "operationId": "reportPoll",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reason": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -731,6 +902,44 @@
     }
   },
   "definitions": {
+    "PrivateAnswer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 0
+        },
+        "emoji": {
+          "type": "string",
+          "example": "string"
+        },
+        "label": {
+          "type": "string",
+          "example": "string"
+        },
+        "pollId": {
+          "type": "number",
+          "example": 0
+        }
+      }
+    },
+    "PublicAnswer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 0
+        },
+        "emoji": {
+          "type": "string",
+          "example": "string"
+        },
+        "label": {
+          "type": "string",
+          "example": "string"
+        }
+      }
+    },
     "PublicMedia": {
       "type": "object",
       "properties": {

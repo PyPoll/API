@@ -11,5 +11,8 @@
     "LoggedIn": "Logged in successfully",
     "TokenRefreshed": "Token refreshed successfully",
     "Followed": "Followed successfully",
-    "Unfollowed": "Unfollowed successfully"
+    "Unfollowed": "Unfollowed successfully",
+    "Reported": "Reported successfully",
+    "Answered": "Answered successfully",
+    "Unanswered": "Unanswered successfully"
 }

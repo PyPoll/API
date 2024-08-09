@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import { auth } from 'middleware/auth.ts';
 import express from 'express';
 
 import routerDocs from './docs.ts';
@@ -20,9 +21,9 @@ router.get('/', (req: Request, res: Response) => {
 router.use('/docs', routerDocs);
 router.use('/auth', routerAuth);
 router.use('/users', routerUsers);
-router.use('/polls', routerPolls);
-router.use('/tags', routerTags);
-router.use('/medias', routerMedias);
+router.use('/polls', auth, routerPolls);
+router.use('/tags', auth, routerTags);
+router.use('/medias', auth, routerMedias);
 router.use('/email', routerEmail);
 router.use('/beta', routerBeta);
 

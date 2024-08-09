@@ -1,12 +1,11 @@
 import express from 'express';
 import { respondError, respond } from 'tools/Responses.ts';
 import * as controller from '../controllers/tags.ts';
-import { auth } from 'middleware/auth.ts';
 import { Tag } from 'models/Tag.ts';
 import Joi from 'joi';
 const router = express.Router();
 
-router.get('/search', auth, async (req, res) => {
+router.get('/search', async (req, res) => {
     /**
      * #swagger.tags = ['Tags']
      * #swagger.description = 'Search for tags'
@@ -28,7 +27,7 @@ router.get('/search', auth, async (req, res) => {
 });
 
 // Get a tag by ID
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", async (req, res) => {
     /**
      * #swagger.tags = ['Tags']
      * #swagger.description = 'Get a tag by ID'

@@ -2,7 +2,7 @@ import { prisma } from '../index.ts';
 import HTTP from 'tools/HTTP.ts';
 import Lang from 'tools/Lang.ts';
 import HTTPError from 'errors/HTTPError.ts';
-import { PrivateUser, PublicUser, User } from 'models/User.ts';
+import { User } from 'models/User.ts';
 import Mailer from 'tools/Mailer.ts';
 import Mail from 'tools/Mail.ts';
 import { getRootDir } from 'index.ts';
@@ -117,7 +117,7 @@ export async function sendEmailRegister(email: string, userId: number|undefined 
  * @param password The user plain password
  * @returns The created user (as a PrivateUser)
  */
-export async function createUser(pseudo: string, email: string): Promise<PrivateUser> {
+export async function createUser(pseudo: string, email: string) {
     const user = await prisma.user.findFirst({ where: { email } });
     
     // If user already exists, throw an error
@@ -144,7 +144,7 @@ export async function createUser(pseudo: string, email: string): Promise<Private
     return User.makePrivate(newUser);
 }
 
-export async function createDevice(): Promise<PrivateUser> {
+export async function createDevice() {
     const newUser = await prisma.user.create({ data: {} });
     return User.makePrivate(newUser);
 }
@@ -248,18 +248,19 @@ export async function deleteUser(id: number) {
     await prisma.user.delete({ where: { id } });
 }
 
-export async function getPublicUser(id: number): Promise<PublicUser> {
-    const user = await prisma.user.findUnique({ where: { id }, include: User.publicIncludes });
-    if (user === null)
-        throw User.MESSAGES.NOT_FOUND().buildHTTPError();
-    return User.makePublic(user);
-}
+export async function getUser(tokenId: number, userId: number) {
+    const shouldBePrivate = tokenId === userId;
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: shouldBePrivate? User.privateIncludes : User.publicIncludes
+    });
 
-export async function getPrivateUser(id: number): Promise<PrivateUser> {
-    const user = await prisma.user.findUnique({ where: { id }, include: User.privateIncludes })
     if (user === null)
         throw User.MESSAGES.NOT_FOUND().buildHTTPError();
-    return User.makePrivate(user);
+
+    const followed = await prisma.follow.findFirst({ where: { followerId: tokenId, followedId: userId } }) != null;
+    const following = await prisma.follow.findFirst({ where: { followerId: userId, followedId: tokenId } }) != null;
+    return { ...User.makePrivate(user), followed, following };
 }
 
 export async function follow(followerId: number, followedId: number) {

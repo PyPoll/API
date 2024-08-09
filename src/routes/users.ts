@@ -53,7 +53,7 @@ router.get('/me', auth, async (req, res) => {
     const { token } = res.locals;
 
     try {
-        const user = await controller.getPrivateUser(token.id);
+        const user = await controller.getUser(token.id, token.id);
         respond(res, User.MESSAGES.FETCHED(), user);
     } catch (err) { respondError(res, err); }
 });
@@ -118,10 +118,8 @@ router.get('/:id', mayAuth, async (req, res) => {
     const { token } = res.locals;
     const id = parseInt(req.params.id);
 
-    const shouldBePrivate = token?.id === id;
-
     try {
-        const user = await (shouldBePrivate? controller.getPrivateUser: controller.getPublicUser)(id);
+        const user = await controller.getUser(token.id, id);
         if (!user) return respondError(res, User.MESSAGES.NOT_FOUND().buildHTTPError());
         respond(res, User.MESSAGES.FETCHED(), user);
     } catch (err) { respondError(res, err); }

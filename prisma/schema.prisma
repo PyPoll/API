@@ -22,6 +22,9 @@ model User {
     polls      Poll[]
     followers  Follow[]   @relation("Followers")
     following  Follow[]   @relation("Following")
+    profile    Profile?
+    reports    PollReports[]
+    votes      PollAnswer[]
 
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
@@ -51,6 +54,8 @@ model Poll {
     tags        PollTag[]
     medias      Media[]
     answers     Answer[]
+    reports     PollReports[]
+    votes       PollAnswer[]
 
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
@@ -82,8 +87,10 @@ model Answer {
     pollId    Int
     label     String
     emoji     String
+    nbVotes   Int      @default(0)
 
     poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+    votes     PollAnswer[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -100,4 +107,48 @@ model PollTag {
     updatedAt DateTime @updatedAt
 
     @@id([pollId, tagId])
+}
+
+model PollAnswer {
+    pollId    Int
+    userId    Int
+    answerId  Int
+
+    poll      Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
+    user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    answer    Answer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@id([pollId, userId, answerId])
+}
+
+model PollReports {
+    pollId    Int
+    userId    Int
+    reason    String
+
+    poll      Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+    user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@id([pollId, userId])
+}
+
+// USER ANALYTICS MODELS
+
+model Profile {
+    id        Int      @id @default(autoincrement())
+    userId    Int      @unique
+
+    // Score of trust for user's reports (+1 for each accepted report, -1 for each rejected report)
+    reportScore Int     @default(0)   
+
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

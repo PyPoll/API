@@ -1,13 +1,12 @@
 import express from 'express';
 import { respondError, respond } from 'tools/Responses.ts';
 import * as controller from '../controllers/medias.ts';
-import { auth } from 'middleware/auth.ts';
 import Joi from 'joi';
 import { Media } from 'models/Media.ts';
 const router = express.Router();
 
 // Get a media infos
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', async (req, res) => {
     /**
      * #swagger.tags = ['Medias']
      * #swagger.description = 'Get a media by ID'
@@ -29,7 +28,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // Get a media preview file
-router.get('/:id/preview', auth, async (req, res) => {
+router.get('/:id/preview', async (req, res) => {
     /**
      * #swagger.tags = ['Medias']
      * #swagger.description = 'Get a media preview file by ID'
@@ -50,7 +49,7 @@ router.get('/:id/preview', auth, async (req, res) => {
 });
 
 // Get a media view file
-router.get('/:id/view', auth, async (req, res) => {
+router.get('/:id/view', async (req, res) => {
     /**
      * #swagger.tags = ['Medias']
      * #swagger.description = 'Get a media view file by ID'

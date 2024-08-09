@@ -12,6 +12,7 @@ const prisma = new PrismaClient(Logger.prismaSettings);
 const app = express();
 Logger.init();
 
+app.set('trust proxy', true);
 app.use(cors({ origin: '*' }));
 app.use(busboy({ limits: { fileSize: 10 * 1024 * 1024 } }));
 app.use(express.urlencoded({ extended: true }));

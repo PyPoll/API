@@ -26,30 +26,25 @@ export default function (period: number, max: number) {
      * @param {NextFunction} next The next function
      */
     return function (req: Request, res: Response, next: NextFunction) {
-        const requestIP = req.headers['X-Forwarded-Host']?.toString() ?? '';
-        console.log('Available headers = ')
-        for (const key in req.headers) {
-            console.log('Key = ' + key + ' | Value = ' + req.headers[key]);
-        }
-        console.log('CalmDown data : RequestIP from header = ' + requestIP + ' | RequestIP from connection = ' + req.ip);
-        if (!requestIP) {
+        if (!req.ip) {
             console.log('CalmDown error : Cannot block from unknown IP');
             next();
             return;
         }
+        console.log('Request from', req.ip);
 
-        const requests = requestsMap[requestIP] || [];
+        const requests = requestsMap[req.ip] || [];
         const now = Date.now();
         const period_ms = period * 1000;
         const period_start = now - period_ms;
         const period_requests = requests.filter((timestamp) => timestamp > period_start);
 
         if (period_requests.length > max) {
-            console.log('Blocking request from', requestIP);
+            console.log('Blocking request from', req.ip);
             return res.status(429).send('Too many requests');
         }
 
-        requestsMap[requestIP] = [...period_requests, now].filter((timestamp) => timestamp > period_start);
+        requestsMap[req.ip] = [...period_requests, now].filter((timestamp) => timestamp > period_start);
         next();
     }
 }

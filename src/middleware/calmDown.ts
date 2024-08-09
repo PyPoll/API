@@ -26,10 +26,15 @@ export default function (period: number, max: number) {
      * @param {NextFunction} next The next function
      */
     return function (req: Request, res: Response, next: NextFunction) {
-        if (!req.ip) {
-            console.log('CalmDown error : Cannot block from unknown IP');
-            next();
-            return;
+        let requestIP = req.ip;
+        if (!requestIP) {
+            if (req.headers['X-Forwarded-Host']) {
+                requestIP = req.headers['X-Forwarded-Host'].toString();
+            } else {
+                console.log('CalmDown error : Cannot block from unknown IP');
+                next();
+                return;
+            }
         }
 
         const requests = requestsMap[req.ip] || [];

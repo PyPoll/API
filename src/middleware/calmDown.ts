@@ -27,6 +27,10 @@ export default function (period: number, max: number) {
      */
     return function (req: Request, res: Response, next: NextFunction) {
         const requestIP = req.headers['X-Forwarded-Host']?.toString() ?? '';
+        console.log('Available headers = ')
+        for (const key in req.headers) {
+            console.log('Key = ' + key + ' | Value = ' + req.headers[key]);
+        }
         console.log('CalmDown data : RequestIP from header = ' + requestIP + ' | RequestIP from connection = ' + req.ip);
         if (!requestIP) {
             console.log('CalmDown error : Cannot block from unknown IP');

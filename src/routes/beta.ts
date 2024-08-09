@@ -4,9 +4,8 @@ import express from 'express';
 import HTTPError from 'errors/HTTPError.ts';
 import Joi from 'joi';
 import { prisma } from 'index.ts';
-import calmDown from 'middleware/calmDown.ts';
 
-router.post('/register', calmDown(30, 1), async (req, res) => {
+router.post('/register', async (req, res) => {
     /**
      * #swagger.tags = ['Beta']
      * #swagger.description = 'Register to the beta'

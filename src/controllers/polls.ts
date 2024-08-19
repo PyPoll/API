@@ -34,7 +34,8 @@ export async function getRecommendedPoll(userId: number) {
         throw Poll.MESSAGES.NOT_FOUND().buildHTTPError();
     }
 
-    return Poll.makePublic(poll);
+    const answered = (await prisma.pollAnswer.findMany({ where: { pollId: poll.id, userId } })).map(a => a.answerId);
+    return { ...Poll.makePublic(poll), answered };
 }
 
 export async function get(userId: number, pollId: number) {

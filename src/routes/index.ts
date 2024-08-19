@@ -10,6 +10,7 @@ import routerTags from './tags.ts';
 import routerMedias from './medias.ts';
 import routerEmail from './email.ts';
 import routerBeta from './beta.ts';
+import routerStats from './stats.ts';
 
 const router = express.Router();
 
@@ -26,5 +27,6 @@ router.use('/tags', auth, routerTags);
 router.use('/medias', auth, routerMedias);
 router.use('/email', routerEmail);
 router.use('/beta', routerBeta);
+router.use('/stats', auth, routerStats);
 
 export default router;

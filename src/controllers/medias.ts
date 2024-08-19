@@ -8,13 +8,16 @@ async function loadCanvas(filepath: string): Promise<Canvas | null> {
         fs.readFile(filepath, (err, data) => {
             if (err) resolve(null);
             const img = new Image();
-            img.src = data;
             img.onload = () => {
                 const canvas = new Canvas(img.width, img.height);
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
                 resolve(canvas);
             }
+            img.onerror = () => {
+                resolve(null);
+            }
+            img.src = data;
         });
     });
 }

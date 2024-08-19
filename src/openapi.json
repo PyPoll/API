@@ -560,7 +560,9 @@
             "ApiKeyAuth": []
           }
         ]
-      },
+      }
+    },
+    "/polls/{id}/answers/{answerId}": {
       "delete": {
         "tags": [
           "Polls"
@@ -575,16 +577,10 @@
             "type": "string"
           },
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "answerId": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "answerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
@@ -599,7 +595,7 @@
         ]
       }
     },
-    "/polls/{id}/report": {
+    "/polls/{id}/reports": {
       "get": {
         "tags": [
           "Polls"
@@ -898,6 +894,72 @@
             "description": "OK"
           }
         }
+      }
+    },
+    "/stats/lookAccount": {
+      "post": {
+        "tags": [
+          "Stats"
+        ],
+        "description": "When account is looked by a user",
+        "operationId": "lookAccount",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pollId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/stats/skipPoll": {
+      "post": {
+        "tags": [
+          "Stats"
+        ],
+        "description": "When poll is skipped by a user",
+        "operationId": "skipPoll",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pollId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
       }
     }
   },

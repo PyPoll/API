@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as tagsController from './tags.ts';
 import HTTPError from 'errors/HTTPError.ts';
 import { Media } from 'models/Media.ts';
+import * as bigData from './bigData.ts';
 
 function verifyOrMakePath(filepath: string) {
     const folder = filepath.substring(0, filepath.lastIndexOf('/'));
@@ -13,19 +14,27 @@ function verifyOrMakePath(filepath: string) {
 }
 
 export async function getRecommendedPoll(userId: number) {
-    // TODO : recommendation system
-    // for the moment, returns a random poll in db
-
-    ()=>{userId}; // just to avoid warning
-
-    const polls = await prisma.poll.findMany({ include: Poll.publicIncludes });
-    if (!polls) {
+    const pollIds = await prisma.poll.findMany({ select: { id: true } });
+    if (pollIds.length === 0) {
         throw Poll.MESSAGES.NOT_FOUND().buildHTTPError();
     }
 
-    const poll = polls[Math.floor(Math.random() * polls.length)];
-    const answered = (await prisma.pollAnswer.findMany({ where: { pollId: poll.id, userId } })).map(a => a.answerId);
-    return { ...Poll.makePublic(poll), answered };
+    const random5Ids = pollIds.sort(() => Math.random() - 0.5).slice(0, 5).map(p => p.id);
+
+    const winner = { score: -9999, pollId: 0 };
+    for (const pollId of random5Ids) {
+        const score = await bigData.getPollUserMatchScore(userId, pollId);
+        if (score > winner.score) {
+            winner.score = score;
+            winner.pollId = pollId;
+        }
+    }
+    const poll = await prisma.poll.findFirst({ where: { id: winner.pollId }, include: Poll.publicIncludes });
+    if (!poll) {
+        throw Poll.MESSAGES.NOT_FOUND().buildHTTPError();
+    }
+
+    return Poll.makePublic(poll);
 }
 
 export async function get(userId: number, pollId: number) {
@@ -60,6 +69,9 @@ export async function createPoll(userId: number, title: string, description: str
             }
         });
     }
+
+    // trigger bigdata event
+    await bigData.onPollCreated(poll.id);
 
     // refetch poll to get tags
     const newPoll = await prisma.poll.findFirst({ where: { id: poll.id }, include: Poll.publicIncludes });
@@ -147,6 +159,9 @@ export async function answerPoll(userId: number, pollId: number, answerId: numbe
         });
         await prisma.answer.update({ where: { id: answerId }, data: { nbVotes: { increment: 1 } }});
     }
+
+    // trigger bigdata event
+    await bigData.onPollAnswered(userId, pollId);
 }
 
 export async function removeAnswerPoll(userId: number, pollId: number, answerId: number) {
@@ -200,11 +215,11 @@ export async function getReportScore(userId: number, pollId: number) {
 
     const USER_TRUST_WEIGHT = 0.5; // (one user with trust level 2 = 1 score)
 
-    const reports = await prisma.pollReports.findMany({ where: { pollId }, include: { user: { include: { profile: true } } } });
+    const reports = await prisma.pollReports.findMany({ where: { pollId }, include: { user: true } });
 
     let reportScore = 0;
     for (const report of reports) {
-        const userTrustLevel = report.user.profile?.reportScore ?? 0;
+        const userTrustLevel = report.user.reportScore ?? 0;
         reportScore += 1; // base score
         reportScore += userTrustLevel * USER_TRUST_WEIGHT; // user trust
     }

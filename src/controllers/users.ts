@@ -11,6 +11,7 @@ import { rmUnverifiedUser } from 'tools/Tasks.ts';
 import { Timer } from 'tools/Timer.ts';
 import { TokenData, TokenUtils } from 'tools/Token.ts';
 import { createUserToken, completeLoginPolling } from './auth.ts';
+import * as bigData from './bigData.ts';
 
 async function createEmailLoginToken(userId: number) {
     return TokenUtils.encode({
@@ -248,8 +249,18 @@ export async function deleteUser(id: number) {
     if (user === null)
         throw User.MESSAGES.NOT_FOUND().buildHTTPError();
 
+    // update followers and following counters
+    const followingUsers = await prisma.follow.findMany({ where: { followerId: id } });
+    const followedUsers = await prisma.follow.findMany({ where: { followedId: id } });
+    const followingIds = followingUsers.map(f => f.followedId);
+    const followedIds = followedUsers.map(f => f.followerId);
+    await prisma.user.updateMany({ where: { id: { in: followingIds } }, data: { nbFollowers: { decrement: 1 } } });
+    await prisma.user.updateMany({ where: { id: { in: followedIds } }, data: { nbFollowing: { decrement: 1 } } });
+    
+    // delete user and its follows
     // TODO : Should email user to delete it instead (with an email button associated with a delete token)
     await prisma.user.delete({ where: { id } });
+    await prisma.follow.deleteMany({ where: { OR: [{ followerId: id }, { followedId: id }] } });
 }
 
 export async function getUser(tokenId: number, userId: number) {
@@ -279,6 +290,9 @@ export async function follow(followerId: number, followedId: number) {
     const nbFollowing = await prisma.follow.count({ where: { followerId } });
     await prisma.user.update({ where: { id: followerId }, data: { nbFollowing } });
     await prisma.user.update({ where: { id: followedId }, data: { nbFollowers } });
+
+    // trigger bigdata event
+    await bigData.onAccountFollowed(followerId, followedId);
 }
 
 export async function unfollow(followerId: number, followedId: number) {

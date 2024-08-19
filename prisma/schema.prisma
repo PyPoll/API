@@ -26,10 +26,13 @@ model User {
     nbFollowers Int      @default(0)
     nbFollowing Int      @default(0)
 
+    // recommendations profile
+    reportScore Int    @default(0)
+    tagsScores  String @default("{}")
+
     polls      Poll[]
     followers  Follow[]   @relation("Followers")
     following  Follow[]   @relation("Following")
-    profile    Profile?
     reports    PollReports[]
     votes      PollAnswer[]
 
@@ -72,7 +75,10 @@ model Tag {
     id        Int      @id @default(autoincrement())
     name      String   @unique
 
-    polls     PollTag[]
+    // Poll trending score (minus each day, bonus each usage)
+    score     Int      @default(1)
+
+    polls       PollTag[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -143,19 +149,4 @@ model PollReports {
     updatedAt DateTime @updatedAt
 
     @@id([pollId, userId])
-}
-
-// USER ANALYTICS MODELS
-
-model Profile {
-    id        Int      @id @default(autoincrement())
-    userId    Int      @unique
-
-    // Score of trust for user's reports (+1 for each accepted report, -1 for each rejected report)
-    reportScore Int     @default(0)   
-
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 }

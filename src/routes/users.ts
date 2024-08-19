@@ -6,6 +6,7 @@ import { respondError, respond } from 'tools/Responses.ts';
 import { auth, mayAuth } from 'middleware/auth.ts';
 import HTTPError from 'errors/HTTPError.ts';
 import { createUserToken } from 'controllers/auth.ts';
+import { Poll } from 'models/Poll.ts';
 const router = express.Router();
 
 // Create a new user
@@ -178,6 +179,29 @@ router.delete('/:id', auth, async (req, res) => {
     try {
         await controller.deleteUser(id);
         respond(res, User.MESSAGES.DELETED());
+    } catch (err) { respondError(res, err); }
+});
+
+// TODO : Add pagination
+// Get user polls by its ID
+router.get('/:id/polls', auth, async (req, res) => {
+    /**
+     * #swagger.tags = ['Users']
+     * #swagger.description = 'Get user polls by its ID'
+     * #swagger.operationId = 'getUserPollsById'
+     * #swagger.security = [{ ApiKeyAuth: [] }]
+     */
+    const schema = Joi.object({
+        id: Joi.number().required()
+    });
+    const { error } = schema.validate(req.params);
+    if (error) return respondError(res, error);
+
+    const id = parseInt(req.params.id);
+
+    try {
+        const polls = await controller.getPolls(id);
+        respond(res, Poll.MESSAGES.FETCHED(), polls);
     } catch (err) { respondError(res, err); }
 });
 

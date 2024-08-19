@@ -12,6 +12,7 @@ import { Timer } from 'tools/Timer.ts';
 import { TokenData, TokenUtils } from 'tools/Token.ts';
 import { createUserToken, completeLoginPolling } from './auth.ts';
 import * as bigData from './bigData.ts';
+import { Poll } from 'models/Poll.ts';
 
 async function createEmailLoginToken(userId: number) {
     return TokenUtils.encode({
@@ -276,6 +277,15 @@ export async function getUser(tokenId: number, userId: number) {
     const followed = await prisma.follow.findFirst({ where: { followerId: tokenId, followedId: userId } }) != null;
     const following = await prisma.follow.findFirst({ where: { followerId: userId, followedId: tokenId } }) != null;
     return { ...User.makePrivate(user), followed, following };
+}
+
+export async function getPolls(userId: number) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (user === null)
+        throw User.MESSAGES.NOT_FOUND().buildHTTPError();
+
+    const polls = await prisma.poll.findMany({ where: { authorId: userId }, include: Poll.publicIncludes });
+    return polls.map(p => Poll.makePublic(p));
 }
 
 export async function follow(followerId: number, followedId: number) {

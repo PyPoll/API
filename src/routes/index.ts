@@ -11,6 +11,7 @@ import routerMedias from './medias.ts';
 import routerEmail from './email.ts';
 import routerBeta from './beta.ts';
 import routerStats from './stats.ts';
+import routerSearch from './search.ts';
 
 const router = express.Router();
 
@@ -28,5 +29,6 @@ router.use('/medias', auth, routerMedias);
 router.use('/email', routerEmail);
 router.use('/beta', routerBeta);
 router.use('/stats', auth, routerStats);
+router.use('/search', auth, routerSearch);
 
 export default router;

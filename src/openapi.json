@@ -296,6 +296,33 @@
         ]
       }
     },
+    "/users/{id}/polls": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get user polls by its ID",
+        "operationId": "getUserPollsById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
     "/users/{id}/follow": {
       "post": {
         "tags": [
@@ -960,6 +987,27 @@
             "ApiKeyAuth": []
           }
         ]
+      }
+    },
+    "/search/": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "description": "Search for users or polls",
+        "operationId": "search",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     }
   },

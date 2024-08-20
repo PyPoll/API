@@ -1,8 +1,8 @@
 {
     "Title": "Bienvenue sur Pypoll ! 👋",
     "FloorText1": "Tu viens de créer un compte sur notre application, un grand merci !",
-    "FloorText2": "Pour finaliser sa création et pouvoir utiliser l'application, clique sur le bouton ci-dessous !",
-    "ButtonText": "Créer mon compte !",
+    "FloorText2": "Pour finaliser sa création et continuer a utiliser l'application, clique sur le bouton ci-dessous !",
+    "ButtonText": "Vérifier mon compte !",
     "GroundText": "On espère que tu apprécieras l'application !",
     "Footer1": "Cet email est envoyé automatiquement à la suite d'une demande de création de compte <b>Pypoll</b>.",
     "Footer2": "Si vous n'êtes pas à l'origine de cette demande, ignorez simplement cet email. Le compte sera automatiquement supprimé dans 24h."

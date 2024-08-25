@@ -14,17 +14,21 @@ router.get('/', async (req, res) => {
      * #swagger.operationId = 'search'
      */
     const schema = Joi.object({
-        query: Joi.string().required().min(3)
-        // TODO : add filters (users-only, polls-only, etc.)
+        query: Joi.string().required().min(3),
+        displayUsers: Joi.boolean().optional(),
+        displayPolls: Joi.boolean().optional(),
     });
     const { error } = schema.validate(req.query);
     if (error) return respondError(res, error);
-    const { query } = req.query;
+    const { query, displayUsers, displayPolls } = req.query;
     if (!query) return HTTPError.BadRequest();
 
+    const showUsers = displayUsers ? (displayUsers === 'true') : false;
+    const showPolls = displayPolls ? (displayPolls === 'true') : false;
+
     try {
-        const users = await controller.searchUsers(query.toString());
-        const polls = await controller.searchPolls(query.toString());
+        const users = showUsers? await controller.searchUsers(query.toString()) : undefined;
+        const polls = showPolls? await controller.searchPolls(query.toString()) : undefined;
         respond(res, new ResponseMessage('Search results', HTTP.OK), {users, polls});
     } catch (err) { respondError(res, err); }
 });

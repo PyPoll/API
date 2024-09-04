@@ -236,6 +236,7 @@ export async function updateUser(id: number, pseudo: string|undefined, email: st
         }
         else {
             // no email = device account creating its user, so we send a welcome mail
+            prisma.user.update({ where: { id }, data: { email } });
             sendEmailRegister(email, id);
         }
     }

@@ -14,7 +14,13 @@ function verifyOrMakePath(filepath: string) {
 }
 
 export async function getRecommendedPoll(userId: number) {
-    const pollIds = await prisma.poll.findMany({ select: { id: true } });
+    const pollIds = await prisma.poll.findMany({
+        select: { id: true },
+        where: {
+            authorId: { not: userId },
+            votes: { none: { userId } }
+        }
+    });
     if (pollIds.length === 0) {
         throw Poll.MESSAGES.NOT_FOUND().buildHTTPError();
     }

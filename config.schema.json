@@ -23,7 +23,7 @@
         },
         "mailContact": {
             "type": "string",
-            "default": "contact@furwaz.fr",
+            "default": "contact@furwaz.com",
             "description": "The email address to contact for support"
         },
         "webHost": {
@@ -81,7 +81,7 @@
                 },
                 "from": {
                     "type": "string",
-                    "default": "Pypoll <noreply@furwaz.fr>"
+                    "default": "Pypoll <noreply@furwaz.com>"
                 },
                 "host": {
                     "type": "string",

@@ -7,7 +7,7 @@ export default class Mailer {
 
     /**
      * Send a mail to a client using the mailer transporter
-     * @param to Client email address (ex: mail@furwaz.fr)
+     * @param to Client email address (ex: mail@furwaz.com)
      * @param mail The mail object to send
      */
     public static sendMail(to: string, mail: Mail) {

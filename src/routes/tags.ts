@@ -3,6 +3,8 @@ import { respondError, respond } from 'tools/Responses.ts';
 import * as controller from '../controllers/tags.ts';
 import { Tag } from 'models/Tag.ts';
 import Joi from 'joi';
+import Lang from 'tools/Lang.ts';
+import { ValidateMessages } from 'index.ts';
 const router = express.Router();
 
 router.get('/search', async (req, res) => {
@@ -15,7 +17,7 @@ router.get('/search', async (req, res) => {
     const schema = Joi.object({
         search: Joi.string().required()
     });
-    const { error } = schema.validate(req.query);
+    const { error } = schema.validate(req.query, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { search } = req.query;
@@ -37,7 +39,7 @@ router.get("/:id", async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { id } = req.params;

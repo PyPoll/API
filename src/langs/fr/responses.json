@@ -1,0 +1,18 @@
+{
+    "Created":  "Création de ${resource} réussie",
+    "Updated":  "${resource} mis à jour avec succès",
+    "Deleted":  "${resource} supprimé avec succès",
+    "Fetched":  "${resource} récupéré avec succès",
+    "NotFound": "${resource} introuvable",
+    "Added":    "${resource} ajouté avec succès",
+    "Removed":  "${resource} supprimé avec succès",
+    "EmailChanged": "Changement d'email réussi",
+    "EmailSent": "Email envoyé avec succès",
+    "LoggedIn": "Connecté avec succès",
+    "TokenRefreshed": "Token rafraîchi avec succès",
+    "Followed": "Suivi avec succès",
+    "Unfollowed": "Non suivi avec succès",
+    "Reported": "Signalé avec succès",
+    "Answered": "Répondu avec succès",
+    "Unanswered": "Non répondu avec succès"
+}

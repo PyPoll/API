@@ -40,8 +40,7 @@ export async function getRecommendedPoll(userId: number) {
         throw Poll.MESSAGES.NOT_FOUND().buildHTTPError();
     }
 
-    const answered = (await prisma.pollAnswer.findMany({ where: { pollId: poll.id, userId } })).map(a => a.answerId);
-    return { ...Poll.makePublic(poll), answered };
+    return Poll.makePublic(poll);
 }
 
 export async function get(userId: number, pollId: number) {
@@ -49,9 +48,7 @@ export async function get(userId: number, pollId: number) {
     if (!poll) {
         throw Poll.MESSAGES.NOT_FOUND().buildHTTPError();
     }
-
-    const answered = (await prisma.pollAnswer.findMany({ where: { pollId, userId } })).map(a => a.answerId);
-    return { ...Poll.makePublic(poll), answered };
+    return Poll.makePublic(poll);
 }
 
 export async function createPoll(userId: number, title: string, description: string, type: string, answers: { emoji: string, label: string }[], tags: string[]) {
@@ -196,7 +193,10 @@ export async function getAnswers(userId: number, pollId: number) {
         throw Poll.MESSAGES.NOT_FOUND().buildHTTPError();
     }
 
-    return poll.answers.map(a => ({ id: a.id, count: a.nbVotes }));
+    return {
+        answered: (await prisma.pollAnswer.findMany({ where: { pollId: poll.id, userId } })).map(a => a.answerId),
+        answers: poll.answers.map(a => ({ id: a.id, count: a.nbVotes }))
+    };
 }
 
 export async function reportPoll(userId: number, pollId: number, reason: string) {

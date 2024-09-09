@@ -7,6 +7,8 @@ import { auth, mayAuth } from 'middleware/auth.ts';
 import HTTPError from 'errors/HTTPError.ts';
 import { createUserToken } from 'controllers/auth.ts';
 import { Poll } from 'models/Poll.ts';
+import Lang from 'tools/Lang.ts';
+import { ValidateMessages } from 'index.ts';
 const router = express.Router();
 
 // Create a new user
@@ -22,7 +24,7 @@ router.post('/', async (req, res) => {
     });
     let user = null as PrivateUser | null;
     if (Object.keys(req.body).length > 0) {
-        const { error } = schema.validate(req.body);
+        const { error } = schema.validate(req.body, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
         if (error) return respondError(res, error);
 
         const { pseudo, email } = req.body;
@@ -72,7 +74,7 @@ router.patch('/me', auth, async (req, res) => {
         email: Joi.string().email().optional(),
         bio: Joi.string().optional().allow(''),
     });
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -113,7 +115,7 @@ router.get('/:id', mayAuth, async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -140,7 +142,7 @@ router.patch('/:id', auth, async (req, res) => {
         email: Joi.string().email().optional(),
         bio: Joi.string().optional().allow(''),
     });
-    const { error } = schema.validate({ id: req.params.id, ...req.body });
+    const { error } = schema.validate({ id: req.params.id, ...req.body }, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const id = parseInt(req.params.id);
@@ -167,7 +169,7 @@ router.delete('/:id', auth, async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate({ ...req.params });
+    const { error } = schema.validate({ ...req.params }, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const id = parseInt(req.params.id);
@@ -194,7 +196,7 @@ router.get('/:id/polls', auth, async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const id = parseInt(req.params.id);
@@ -216,7 +218,7 @@ router.post('/:id/follow', auth, async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -239,7 +241,7 @@ router.delete('/:id/follow', auth, async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;

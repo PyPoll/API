@@ -1,0 +1,14 @@
+{
+    "InternalServerError": "Erreur interne du serveur.",
+    "InvalidToken": "Jeton invalide.",
+    "ExpiredToken": "Jeton expiré.",
+    "InvalidPassword": "Mot de passe invalide.",
+    "AlreadyExists": "${resource} existe déjà.",
+    "EmailAlreadyVerified": "Email déjà vérifié.",
+    "Unauthorized": "Non autorisé.",
+    "BadRequest": "Requête incorrecte.",
+    "InvalidCredentials": "Identifiants invalides.",
+    "MissingOldPassword": "Ancien mot de passe manquant.",
+    "InvalidOldPassword": "Ancien mot de passe invalide.",
+    "EnhanceYourCalm": "Gardez votre calme."
+}

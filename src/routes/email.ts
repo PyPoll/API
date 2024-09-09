@@ -6,6 +6,7 @@ import { User } from 'models/User.ts';
 import Lang from 'tools/Lang.ts';
 import HTTP from 'tools/HTTP.ts';
 import { createLoginPollingToken } from 'controllers/auth.ts';
+import { ValidateMessages } from 'index.ts';
 const router = express.Router();
 
 router.get('/login', async (req, res) => {
@@ -17,7 +18,7 @@ router.get('/login', async (req, res) => {
     const schema = Joi.object({
         email: Joi.string().email().required()
     });
-    const { error } = schema.validate(req.query);
+    const { error } = schema.validate(req.query, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { email } = req.query;
@@ -43,7 +44,7 @@ router.post('/login', async (req, res) => {
     const schema = Joi.object({
         token: Joi.string().required()
     });
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = req.body;
@@ -66,7 +67,7 @@ router.post('/change', async (req, res) => {
     const schema = Joi.object({
         token: Joi.string().required()
     });
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = req.body;

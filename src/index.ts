@@ -8,6 +8,13 @@ import express from 'express';
 import cors from 'cors';
 import 'tools/Tasks.ts';
 
+import joiEn from 'langs/en/joi.json' with { type: 'json' };
+import joiFr from 'langs/fr/joi.json' with { type: 'json' };
+const ValidateMessages = {
+    en: joiEn,
+    fr: joiFr
+};
+
 const prisma = new PrismaClient(Logger.prismaSettings);
 const app = express();
 Logger.init();
@@ -29,4 +36,4 @@ function getRootDir() {
     return fileURLToPath(new URL('.', import.meta.url));
 }
 
-export { app, prisma, getRootDir };
+export { app, prisma, getRootDir, ValidateMessages };

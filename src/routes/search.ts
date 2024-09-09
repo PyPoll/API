@@ -4,6 +4,8 @@ import * as controller from '../controllers/search.ts';
 import HTTP from 'tools/HTTP.ts';
 import { respondError, respond, ResponseMessage } from 'tools/Responses.ts';
 import HTTPError from 'errors/HTTPError.ts';
+import Lang from 'tools/Lang.ts';
+import { ValidateMessages } from 'index.ts';
 const router = express.Router();
 
 // Search for something
@@ -18,7 +20,7 @@ router.get('/', async (req, res) => {
         displayUsers: Joi.boolean().optional(),
         displayPolls: Joi.boolean().optional(),
     });
-    const { error } = schema.validate(req.query);
+    const { error } = schema.validate(req.query, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
     const { query, displayUsers, displayPolls } = req.query;
     if (!query) return HTTPError.BadRequest();

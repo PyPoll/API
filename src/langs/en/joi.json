@@ -1,0 +1,13 @@
+{
+    "any.required": "{{#label}} is required",
+    "string.email": "{{#label}} Must be a valid email",
+    "string.base": "{{#label}} Must be a string",
+    "string.min": "{{#label}} Must be at least {{#limit}} characters long",
+    "string.max": "{{#label}} Must be at most {{#limit}} characters long",
+    "string.empty": "{{#error}} Cannot be empty",
+    "number.base": "{{#label}} Must be a number",
+    "any.invalid": "{{#label}} Value not valid",
+    "phoneNumber.invalid": "Phone Number not valid",
+    "array.unique": "{{#label}} contains a duplicate value",
+    "email": "{{#label}} Must be a valid email"
+}

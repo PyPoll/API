@@ -2,9 +2,10 @@ import express from 'express';
 import { respondError, respond, ResponseMessage } from 'tools/Responses.ts';
 import * as controller from '../controllers/bigData.ts';
 import Joi from 'joi';
-import { prisma } from 'index.ts';
+import { prisma, ValidateMessages } from 'index.ts';
 import { Poll } from 'models/Poll.ts';
 import HTTP from 'tools/HTTP.ts';
+import Lang from 'tools/Lang.ts';
 const router = express.Router();
 
 // When account is looked by a user
@@ -18,7 +19,7 @@ router.post('/lookAccount', async (req, res) => {
     const schema = Joi.object({
         pollId: Joi.number().required()
     });
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const userId = res.locals.token.id;
@@ -47,7 +48,7 @@ router.post('/skipPoll', async (req, res) => {
     const schema = Joi.object({
         pollId: Joi.number().required()
     });
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const userId = res.locals.token.id;

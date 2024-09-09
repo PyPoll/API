@@ -5,6 +5,8 @@ import { Poll } from 'models/Poll.ts';
 import Joi from 'joi';
 import HTTPError from 'errors/HTTPError.ts';
 import { Media } from 'models/Media.ts';
+import Lang from 'tools/Lang.ts';
+import { ValidateMessages } from 'index.ts';
 const router = express.Router();
 
 // Get a new poll (from recommandation)
@@ -40,7 +42,7 @@ router.post('/', async (req, res) => {
         }).min(2).required(),
         tags: Joi.array().items(Joi.string())
     });
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -70,7 +72,7 @@ router.get('/:id', async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -93,7 +95,7 @@ router.delete('/:id', async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -121,7 +123,7 @@ router.post('/:id/media', async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     try {
@@ -151,7 +153,7 @@ router.get('/:id/answers', async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -174,7 +176,7 @@ router.post('/:id/answers', async (req, res) => {
         id: Joi.number().required(),
         answerId: Joi.number().required()
     });
-    const { error } = schema.validate({ ...req.params, ...req.body });
+    const { error } = schema.validate({ ...req.params, ...req.body }, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -198,7 +200,7 @@ router.delete('/:id/answers/:answerId', async (req, res) => {
         id: Joi.number().required(),
         answerId: Joi.number().required()
     });
-    const { error } = schema.validate({ ...req.params });
+    const { error } = schema.validate({ ...req.params }, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -220,7 +222,7 @@ router.get('/:id/reports', async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;
@@ -243,7 +245,7 @@ router.post('/:id/reports', async (req, res) => {
         id: Joi.number().required(),
         reason: Joi.string().required()
     });
-    const { error } = schema.validate({ ...req.params, ...req.body });
+    const { error } = schema.validate({ ...req.params, ...req.body }, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { token } = res.locals;

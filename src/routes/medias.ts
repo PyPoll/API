@@ -3,6 +3,8 @@ import { respondError, respond } from 'tools/Responses.ts';
 import * as controller from '../controllers/medias.ts';
 import Joi from 'joi';
 import { Media } from 'models/Media.ts';
+import Lang from 'tools/Lang.ts';
+import { ValidateMessages } from 'index.ts';
 const router = express.Router();
 
 // Get a media infos
@@ -16,7 +18,7 @@ router.get('/:id', async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { id } = req.params;
@@ -38,7 +40,7 @@ router.get('/:id/preview', async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { id } = req.params;
@@ -59,7 +61,7 @@ router.get('/:id/view', async (req, res) => {
     const schema = Joi.object({
         id: Joi.number().required()
     });
-    const { error } = schema.validate(req.params);
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
     if (error) return respondError(res, error);
 
     const { id } = req.params;

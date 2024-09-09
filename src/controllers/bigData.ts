@@ -4,6 +4,7 @@ const POLL_ANSWERED_SCORE_FACTOR = 1 / 4;
 const POLL_SKIPPED_SCORE_FACTOR = -1 / 8;
 const ACCOUNT_LOOKED_SCORE_FACTOR = 1 / 8;
 const ACCOUNT_FOLLOWED_SCORE_FACTOR = 1 / 4;
+const POLL_ALREADY_VIEWED_MANUS = 10;
 
 type TagScoreList = {[tagId: number]: number};
 
@@ -178,5 +179,6 @@ export async function onAccountFollowed(userId: number, accountId: number) {
 export async function getPollUserMatchScore(userId: number, pollId: number) {
     const userTags = await getUserTagsScores(userId);
     const pollTags = await getPollTagsScores(pollId);
-    return intersectTags(softmax(userTags), softmax(pollTags));
+    const nbPollViews = (await prisma.pollViews.findFirst({ where: { pollId, userId }}))?.nbViews ?? 0;
+    return intersectTags(softmax(userTags), softmax(pollTags)) - (nbPollViews * POLL_ALREADY_VIEWED_MANUS);
 }

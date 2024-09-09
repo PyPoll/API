@@ -35,6 +35,7 @@ model User {
     following  Follow[]   @relation("Following")
     reports    PollReports[]
     votes      PollAnswer[]
+    views      PollViews[]
 
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
@@ -66,6 +67,7 @@ model Poll {
     answers     Answer[]
     reports     PollReports[]
     votes       PollAnswer[]
+    views       PollViews[]
 
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
@@ -141,6 +143,20 @@ model PollReports {
     pollId    Int
     userId    Int
     reason    String
+
+    poll      Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+    user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@id([pollId, userId])
+}
+
+model PollViews {
+    pollId    Int
+    userId    Int
+    nbViews   Int
 
     poll      Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
     user      User @relation(fields: [userId], references: [id], onDelete: Cascade)

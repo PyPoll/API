@@ -39,6 +39,20 @@ export async function getRecommendedPoll(userId: number) {
     if (!poll) {
         throw Poll.MESSAGES.NOT_FOUND().buildHTTPError();
     }
+    if (await prisma.pollViews.findFirst({ where: { pollId: poll.id, userId } })) {
+        await prisma.pollViews.update({
+            where: { pollId_userId: { pollId: poll.id, userId } },
+            data: { nbViews: { increment: 1 } }
+        });
+    } else {
+        await prisma.pollViews.create({
+            data: {
+                poll: { connect: { id: poll.id } },
+                user: { connect: { id: userId } },
+                nbViews: 1
+            }
+        });
+    }
 
     return Poll.makePublic(poll);
 }

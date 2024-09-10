@@ -253,4 +253,48 @@ router.delete('/:id/follow', auth, async (req, res) => {
     } catch (err) { respondError(res, err); }
 });
 
+// Get user followers of a user by its ID
+router.get('/:id/followers', auth, async (req, res) => {
+    /**
+     * #swagger.tags = ['Users']
+     * #swagger.description = 'Get user followers of a user by its ID'
+     * #swagger.operationId = 'getUserFollowersById'
+     * #swagger.security = [{ ApiKeyAuth: [] }]
+     */
+    const schema = Joi.object({
+        id: Joi.number().required()
+    });
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
+    if (error) return respondError(res, error);
+
+    const id = parseInt(req.params.id);
+
+    try {
+        const followers = await controller.getFollowers(id);
+        respond(res, User.MESSAGES.FETCHED(), followers);
+    } catch (err) { respondError(res, err); }
+});
+
+// Get user following of a user by its ID
+router.get('/:id/following', auth, async (req, res) => {
+    /**
+     * #swagger.tags = ['Users']
+     * #swagger.description = 'Get user following of a user by its ID'
+     * #swagger.operationId = 'getUserFollowingById'
+     * #swagger.security = [{ ApiKeyAuth: [] }]
+     */
+    const schema = Joi.object({
+        id: Joi.number().required()
+    });
+    const { error } = schema.validate(req.params, { errors: {language: Lang.getLanguage()}, messages: ValidateMessages });
+    if (error) return respondError(res, error);
+
+    const id = parseInt(req.params.id);
+
+    try {
+        const followers = await controller.getFollowing(id);
+        respond(res, User.MESSAGES.FETCHED(), followers);
+    } catch (err) { respondError(res, err); }
+});
+
 export default router;

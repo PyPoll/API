@@ -332,3 +332,21 @@ export async function unfollow(followerId: number, followedId: number) {
     await prisma.user.update({ where: { id: followerId }, data: { nbFollowing } });
     await prisma.user.update({ where: { id: followedId }, data: { nbFollowers } });
 }
+
+export async function getFollowers(userId: number) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (user === null)
+        throw User.MESSAGES.NOT_FOUND().buildHTTPError();
+
+    const followers = await prisma.follow.findMany({ where: { followedId: userId }, include: { follower: true } });
+    return followers.map(f => User.makePublic(f.follower));
+}
+
+export async function getFollowing(userId: number) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (user === null)
+        throw User.MESSAGES.NOT_FOUND().buildHTTPError();
+
+    const following = await prisma.follow.findMany({ where: { followerId: userId }, include: { followed: true } });
+    return following.map(f => User.makePublic(f.followed));
+}

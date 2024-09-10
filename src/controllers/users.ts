@@ -298,7 +298,7 @@ export async function getPolls(userId: number) {
     if (user === null)
         throw User.MESSAGES.NOT_FOUND().buildHTTPError();
 
-    const polls = await prisma.poll.findMany({ where: { authorId: userId }, include: Poll.publicIncludes });
+    const polls = await prisma.poll.findMany({ where: { authorId: userId }, include: Poll.publicIncludes, orderBy: { createdAt: 'desc' } });
     return polls.map(p => Poll.makePublic(p));
 }
 

@@ -123,7 +123,7 @@ export async function sendEmailRegister(email: string, userId: number|undefined 
  * @returns The created user (as a PrivateUser)
  */
 export async function createUser(pseudo: string, email: string) {
-    const user = await prisma.user.findFirst({ where: { email } });
+    const user = await prisma.user.findFirst({ where: { OR: [ {email}, {pseudo} ] } });
     
     // If user already exists, throw an error
     if (user !== null) {
@@ -150,7 +150,20 @@ export async function createUser(pseudo: string, email: string) {
 }
 
 export async function createDevice() {
-    const pseudo = 'Octopus #' + Math.floor(Math.random() * 1000);
+    const maxIter = 10;
+    
+    let pseudo: string;
+    let iter = 0;
+    do {
+        pseudo = 'Octopus #' + Math.floor(Math.random() * 1000);
+        const exists = await prisma.user.findFirst({ where: { pseudo } });
+        if (exists === null) break;
+    } while (iter++ < maxIter);
+
+    if (iter >= maxIter) {
+        throw HTTPError.InternalServerError();
+    }
+
     const newUser = await prisma.user.create({ data: { pseudo } });
     return User.makePrivate(newUser);
 }

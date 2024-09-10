@@ -20,7 +20,7 @@ model Beta {
 model User {
     id          Int      @id @default(autoincrement())
     email       String?  @unique
-    pseudo      String?
+    pseudo      String?  @unique
     bio         String?
     emailValid  Boolean  @default(false)
     nbFollowers Int      @default(0)

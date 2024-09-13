@@ -11,6 +11,7 @@ export default class Mailer {
      * @param mail The mail object to send
      */
     public static sendMail(to: string, mail: Mail) {
+        if (!Config.mail.enabled) return;
         console.debug('Sending mail to ' + to + ' : [' + mail.subject + ']');
         this.getTransporter().then(transporter => {
             transporter.sendMail({

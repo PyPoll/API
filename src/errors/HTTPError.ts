@@ -51,6 +51,13 @@ export default class HTTPError extends Error {
         );
     }
 
+    public static Conflict() {
+        return new HTTPError(
+            HTTP.CONFLICT,
+            Lang.GetText(Lang.CreateTranslationContext('errors', 'Conflict'))
+        );
+    }
+
     public status: number;
 
     /**

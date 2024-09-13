@@ -14,5 +14,6 @@
     "Unfollowed": "Unfollowed successfully",
     "Reported": "Reported successfully",
     "Answered": "Answered successfully",
-    "Unanswered": "Unanswered successfully"
+    "Unanswered": "Unanswered successfully",
+    "Conflict": "${resource} conflict"
 }

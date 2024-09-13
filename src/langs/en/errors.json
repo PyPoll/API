@@ -10,5 +10,6 @@
     "InvalidCredentials": "Invalid credentials.",
     "MissingOldPassword": "Missing old password.",
     "InvalidOldPassword": "Invalid old password.",
-    "EnhanceYourCalm": "Enhance your calm."
+    "EnhanceYourCalm": "Enhance your calm.",
+    "Conflict": "Conflict."
 }

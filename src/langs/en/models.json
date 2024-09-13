@@ -2,5 +2,7 @@
     "User": "User",
     "Poll": "Poll",
     "Media": "Media",
-    "Tag": "Tag"
+    "Tag": "Tag",
+    "Token": "Token",
+    "Portal": "Portal"
 }

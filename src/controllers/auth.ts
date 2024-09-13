@@ -5,7 +5,8 @@ import { respond, respondError, ResponseMessage } from "tools/Responses.ts";
 import Lang from "tools/Lang.ts";
 import HTTPError from "errors/HTTPError.ts";
 import { prisma } from "index.ts";
-import { User } from "models/User.ts";
+import { PrivateUser, User } from "models/User.ts";
+import { getUserInfos } from "tools/Portal.ts";
 
 type EmailPollingData = {
     response: Response
@@ -60,4 +61,64 @@ export function addEmailPollingRequest(email: string, response: Response) {
             delete emailPollingRequests[email];
         }
     }, 1000 * 30); // 30 seconds
+}
+
+export async function createOrLoginFurWazUser(furwazId: number, forcedPseudo?: string, forcedEmail?: string): Promise<{user: PrivateUser, conflict: any}> {
+    const furwazExists = await prisma.user.findFirst({ where: { furwazId } });
+    if (furwazExists) return {user: User.makePrivate(furwazExists), conflict: undefined};
+
+    const res = await fetch(`https://${Config.mainAPIHost}/users/${furwazId}`, {
+        headers: { "Content-Type": "application/json", }
+    });
+    const json = await res.json() as any;
+    const furwazUser = json.data;
+
+    const finalEmail = forcedEmail ?? furwazUser.email;
+    const finalPseudo = forcedPseudo ?? furwazUser.pseudo;
+
+    const dbExists = await prisma.user.findFirst({ where: { OR: [
+        {email: finalEmail},
+        {pseudo: finalPseudo}
+    ]}});
+
+    const data: any = {};
+    if (dbExists) {
+        data.conflict = {
+            pseudo: dbExists.pseudo === finalPseudo ? finalPseudo : undefined,
+            email: dbExists.email === finalEmail ? finalEmail : undefined
+        };
+    } else {
+        data.user = User.makePrivate(await prisma.user.create({
+            data: { furwazId, pseudo: finalPseudo, email: finalEmail }
+        }));
+    }
+
+    return data;
+}
+
+export async function linkFurWazAccount(userId: number, portalToken: string) {
+    const portalUserInfos = await getUserInfos(portalToken);
+    if (!portalUserInfos) throw HTTPError.BadRequest();
+
+    const user = await prisma.user.findFirst({ where: { id: userId } });
+    if (!user) throw User.MESSAGES.NOT_FOUND().buildHTTPError();
+
+    if (user.furwazId) throw HTTPError.Conflict();
+
+    return await prisma.user.update({
+        where: { id: userId },
+        data: { furwazId: portalUserInfos.id }
+    });
+}
+
+export async function unlinkFurWazAccount(userId: number) {
+    const user = await prisma.user.findFirst({ where: { id: userId } });
+    if (!user) throw User.MESSAGES.NOT_FOUND().buildHTTPError();
+
+    if (!user.furwazId) throw HTTPError.BadRequest();
+
+    return await prisma.user.update({
+        where: { id: userId },
+        data: { furwazId: null }
+    });
 }

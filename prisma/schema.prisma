@@ -26,6 +26,9 @@ model User {
     nbFollowers Int      @default(0)
     nbFollowing Int      @default(0)
 
+    // furwaz
+    furwazId    Int?
+
     // recommendations profile
     reportScore Int    @default(0)
     tagsScores  String @default("{}")

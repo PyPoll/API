@@ -10,5 +10,6 @@
     "InvalidCredentials": "Identifiants invalides.",
     "MissingOldPassword": "Ancien mot de passe manquant.",
     "InvalidOldPassword": "Ancien mot de passe invalide.",
-    "EnhanceYourCalm": "Gardez votre calme."
+    "EnhanceYourCalm": "Gardez votre calme.",
+    "Conflict": "Conflit."
 }

@@ -14,5 +14,6 @@
     "Unfollowed": "Non suivi avec succès",
     "Reported": "Signalé avec succès",
     "Answered": "Répondu avec succès",
-    "Unanswered": "Non répondu avec succès"
+    "Unanswered": "Non répondu avec succès",
+    "Conflict": "Conflit ${resource}"
 }

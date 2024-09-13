@@ -97,6 +97,61 @@
         }
       }
     },
+    "/auth/furwaz/generate": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Generated a FurWaz Portal token to log in",
+        "operationId": "GenerateFurWazPortalToken",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/furwaz/token": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "description": "Refresh a user access token with its refresh token",
+        "operationId": "refreshFurWazToken",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pseudo",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
     "/users/": {
       "post": {
         "tags": [
@@ -111,10 +166,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "pseudo": {
+                "errors": {
                   "example": "any"
                 },
-                "email": {
+                "messages": {
                   "example": "any"
                 }
               }
@@ -159,13 +214,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "pseudo": {
+                "errors": {
                   "example": "any"
                 },
-                "email": {
-                  "example": "any"
-                },
-                "bio": {
+                "messages": {
                   "example": "any"
                 }
               }
@@ -246,13 +298,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "pseudo": {
+                "errors": {
                   "example": "any"
                 },
-                "email": {
-                  "example": "any"
-                },
-                "bio": {
+                "messages": {
                   "example": "any"
                 }
               }
@@ -375,6 +424,60 @@
         ]
       }
     },
+    "/users/{id}/followers": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get user followers of a user by its ID",
+        "operationId": "getUserFollowersById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/users/{id}/following": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get user following of a user by its ID",
+        "operationId": "getUserFollowingById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
     "/polls/": {
       "get": {
         "tags": [
@@ -406,19 +509,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "title": {
+                "errors": {
                   "example": "any"
                 },
-                "description": {
-                  "example": "any"
-                },
-                "type": {
-                  "example": "any"
-                },
-                "answers": {
-                  "example": "any"
-                },
-                "tags": {
+                "messages": {
                   "example": "any"
                 }
               }
@@ -570,7 +664,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "answerId": {
+                "errors": {
+                  "example": "any"
+                },
+                "messages": {
                   "example": "any"
                 }
               }
@@ -667,7 +764,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "reason": {
+                "errors": {
+                  "example": "any"
+                },
+                "messages": {
                   "example": "any"
                 }
               }
@@ -695,7 +795,12 @@
         "operationId": "searchTags",
         "parameters": [
           {
-            "name": "search",
+            "name": "errors",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "messages",
             "in": "query",
             "type": "string"
           }
@@ -829,7 +934,12 @@
         "operationId": "emailSend",
         "parameters": [
           {
-            "name": "email",
+            "name": "errors",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "messages",
             "in": "query",
             "type": "string"
           }
@@ -853,7 +963,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "token": {
+                "errors": {
+                  "example": "any"
+                },
+                "messages": {
                   "example": "any"
                 }
               }
@@ -881,7 +994,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "token": {
+                "errors": {
+                  "example": "any"
+                },
+                "messages": {
                   "example": "any"
                 }
               }
@@ -909,7 +1025,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "email": {
+                "errors": {
+                  "example": "any"
+                },
+                "messages": {
                   "example": "any"
                 }
               }
@@ -937,7 +1056,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "pollId": {
+                "errors": {
+                  "example": "any"
+                },
+                "messages": {
                   "example": "any"
                 }
               }
@@ -970,7 +1092,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "pollId": {
+                "errors": {
+                  "example": "any"
+                },
+                "messages": {
                   "example": "any"
                 }
               }
@@ -998,7 +1123,12 @@
         "operationId": "search",
         "parameters": [
           {
-            "name": "query",
+            "name": "errors",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "messages",
             "in": "query",
             "type": "string"
           }

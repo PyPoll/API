@@ -10,6 +10,7 @@ export interface PrivateUser {
     bio: string;
     nbFollowers: number;
     nbFollowing: number;
+    furwazId: number;
 }
 
 export interface PublicUser {
@@ -47,7 +48,11 @@ export class User {
         UNFOLLOWED: () => new ResponseMessage(
             Lang.GetText(Lang.CreateTranslationContext('responses', 'Unfollowed')),
             200
-        )
+        ),
+        CONFLICT: () => new ResponseMessage(
+            Lang.GetText(Lang.CreateTranslationContext('responses', 'Conflict')),
+            409
+        ),
     };
 
     public static makePublic(obj: any): PublicUser {
@@ -71,7 +76,8 @@ export class User {
             email: obj.email,
             bio: obj.bio,
             nbFollowers: obj.nbFollowers,
-            nbFollowing: obj.nbFollowing
+            nbFollowing: obj.nbFollowing,
+            furwazId: obj.furwazId
         }
     }
 }
